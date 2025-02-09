@@ -1,4 +1,5 @@
 import datetime
+from sqlalchemy import func, or_, text
 from sqlalchemy.orm import Session
 
 from models import Produto
@@ -38,7 +39,7 @@ class ProdutoRepository:
         products = db.query(Produto).all()
 
         def str_to_day(date: str): 
-            return datetime.strptime(date, '%d-%m-%Y').date()
+            return datetime.datetime.strptime(date, "%d/%m/%Y")
         
         date_de = str_to_day(de)
         date_ate = str_to_day(ate)
@@ -47,7 +48,8 @@ class ProdutoRepository:
 
         for product in products:
             date_product = str_to_day(product.validade)
-            if date_product > date_de and date_product < date_ate:
+            print(date_product, product.validade)
+            if date_product >= date_de and date_product <= date_ate:
                 res.append(product)
 
         return res
@@ -62,3 +64,15 @@ class ProdutoRepository:
         if produto is not None:
             db.delete(produto)
             db.commit()
+
+    @staticmethod
+    def search(db:Session, req: str):
+        response = []
+        print(req)
+        response = db.query(Produto).filter(or_(Produto.barras == req, Produto.sku == req)).all()
+        sql = text("SELECT * FROM produtos WHERE nome LIKE :substring")
+        resultados = db.execute(sql, {'substring': f'%{req}%'}).fetchall()
+        for item in resultados:
+            response.append(item)
+        return response
+

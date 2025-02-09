@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import Produto
 from database import engine, Base, get_db
 from repository import ProdutoRepository
-from schemas import ProdutoRequest, ProdutoResponse
+from schemas import FilterRequest, ProdutoRequest, ProdutoResponse
 
 Base.metadata.create_all(bind=engine)
 
@@ -88,6 +88,15 @@ def update(id: int, request: ProdutoRequest, db: Session = Depends(get_db)):
     produto = ProdutoRepository.save(db, Produto(id=id, **request.dict()))
     return ProdutoResponse.from_orm(produto)
 
+@app.get("/api/produtos/filter", response_model=list[ProdutoResponse])
+def filter_by_date(de: str, ate: str, db: Session = Depends(get_db)):
+    products = ProdutoRepository.filter_by_date(db, de, ate)
+    return [ProdutoResponse.from_orm(produto) for produto in products]
+
+@app.get("/api/produtos/search/{term}", response_model=list[ProdutoResponse])
+def search(term: str, db:Session = Depends(get_db)):
+    products = ProdutoRepository.search(db, term)
+    return [ProdutoResponse.from_orm(produto) for produto in products]
 # ==============================
 
 

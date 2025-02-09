@@ -19,3 +19,6 @@ class ProdutoResponse(ProdutoBase):
         orm_mode = True
         from_attributes=True
 
+class FilterRequest(BaseModel):
+    de: str
+    ate: str
