@@ -70,8 +70,8 @@ class ProdutoRepository:
         response = []
         print(req)
         response = db.query(Produto).filter(or_(Produto.barras == req, Produto.sku == req)).all()
-        sql = text("SELECT * FROM produtos WHERE nome LIKE :substring")
-        resultados = db.execute(sql, {'substring': f'%{req}%'}).fetchall()
+        sql = text("SELECT * FROM produtos WHERE (lower(nome)) LIKE :substring")
+        resultados = db.execute(sql, {'substring': f'%{req.lower()}%'}).fetchall()
         for item in resultados:
             response.append(item)
         return response
