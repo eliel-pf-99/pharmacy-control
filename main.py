@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from models import Produto
 from database import engine, Base, get_db
 from repository import ProdutoRepository
-from schemas import FilterRequest, ProdutoRequest, ProdutoResponse
+from schemas import  ProdutoRequest, ProdutoResponse
 
 Base.metadata.create_all(bind=engine)
 
@@ -64,7 +64,7 @@ def find_by_sku(sku: str, db: Session = Depends(get_db)):
     return ProdutoResponse.from_orm(produto)
 
 @app.get("/api/produtos/barras/{barras}", response_model=ProdutoResponse)
-def find_by_id(barras: int, db: Session = Depends(get_db)):
+def find_by_id(barras: str, db: Session = Depends(get_db)):
     produto = ProdutoRepository.find_by_barras(db, barras)
     if not produto:
         raise HTTPException(

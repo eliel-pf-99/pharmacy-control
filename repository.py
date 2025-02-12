@@ -27,7 +27,7 @@ class ProdutoRepository:
         return db.query(Produto).filter(Produto.sku == sku).first()
     
     @staticmethod
-    def find_by_barras(db: Session, barras: int) -> Produto:
+    def find_by_barras(db: Session, barras: str) -> Produto:
         return db.query(Produto).filter(Produto.barras == barras).first()
 
     @staticmethod
