@@ -4,7 +4,7 @@ from pydantic import BaseModel
 class ProdutoBase(BaseModel):
     nome: str
     sku: str 
-    barras: int
+    barras: str 
     quantidade: int
     validade: str
 
